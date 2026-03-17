@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP Basics → Mini Project | Student Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --surface: #131627;
+    --card: #1a1e35;
+    --border: #252a45;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --accent4: #ffd166;
+    --text: #e8eaf6;
+    --muted: #7b82a8;
+    --code-bg: #0a0c18;
+    --php-purple: #8892BF;
+    --php-blue: #4F5B93;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f1a 0%, #1a1040 50%, #0d0f1a 100%);
+    padding: 80px 20px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+    top: -200px; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.4);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero h1 em { color: var(--accent2); font-style: normal; }
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 580px;
+    margin: 0 auto 32px;
+  }
+  .php-elephant {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* PROGRESS NAV */
+  .progress-nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .progress-nav::-webkit-scrollbar { display: none; }
+  .nav-inner {
+    display: flex;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 14px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* SECTION */
+  .section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* LESSON HEADER */
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lesson-num {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--accent), #9f99ff);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .lesson-title h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+  .lesson-title p { color: var(--muted); font-size: 0.9rem; }
+
+  /* CONCEPT CARD */
+  .concept-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .concept-card:hover { border-color: var(--accent); }
+  .concept-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(108,99,255,0.15);
+    color: var(--accent);
+  }
+  .tag.green { background: rgba(0,212,170,0.12); color: var(--accent2); }
+  .tag.red { background: rgba(255,107,107,0.12); color: var(--accent3); }
+  .tag.yellow { background: rgba(255,209,102,0.12); color: var(--accent4); }
+
+  /* CODE BLOCK */
+  .code-wrap {
+    position: relative;
+    margin: 16px 0;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--border);
+    border: none;
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: var(--accent); color: #fff; }
+  .copy-btn.copied { background: var(--accent2); color: #000; }
+
+  /* Syntax highlighting */
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .var { color: #89ddff; }
+  .cm { color: #546e7a; font-style: italic; }
+  .tag-php { color: #ff5572; }
+  .hl { color: var(--accent4); }
+
+  /* INFO BOXES */
+  .info-box {
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .info-box.tip { background: rgba(0,212,170,0.08); border-left: 3px solid var(--accent2); }
+  .info-box.warn { background: rgba(255,209,102,0.08); border-left: 3px solid var(--accent4); }
+  .info-box.note { background: rgba(108,99,255,0.08); border-left: 3px solid var(--accent); }
+  .info-box .icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  .info-box .content { font-size: 0.88rem; color: var(--text); }
+  .info-box .content strong { font-weight: 700; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.88rem;
+  }
+  th {
+    background: var(--border);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 0.82rem;
+    color: var(--php-purple);
+  }
+
+  /* GRID */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* STEP LIST */
+  .step-list { list-style: none; padding: 0; }
+  .step-list li {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-dot {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--accent), #9f99ff);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .step-list li p { font-size: 0.9rem; padding-top: 4px; }
+
+  /* PROJECT SECTION */
+  .project-section {
+    background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(0,212,170,0.05));
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .project-section h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* FILE TREE */
+  .file-tree {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+  }
+  .file-tree .folder { color: var(--accent4); }
+  .file-tree .file { color: var(--accent2); }
+  .file-tree .indent { padding-left: 20px; }
+  .file-tree .indent2 { padding-left: 40px; }
+
+  /* NAV BUTTONS */
+  .nav-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #5a51ff; transform: translateY(-1px); }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+  /* OUTPUT PREVIEW */
+  .output-preview {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.88rem;
+    color: #333;
+    border: 1px solid var(--border);
+  }
+
+  /* PRACTICE */
+  .practice-card {
+    background: var(--card);
+    border: 1px solid var(--accent2);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .practice-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--accent2);
+  }
+  .practice-card p { font-size: 0.87rem; color: var(--muted); }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  .checklist li::before {
+    content: '✓';
+    color: var(--accent2);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .flow-step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  .flow-arrow { color: var(--accent); font-size: 1.2rem; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="php-elephant">🐘</span>
+  <div class="hero-badge">📚 Student Learning Guide</div>
+  <h1>Learn <span>PHP</span> Basics<br>to <em>Mini Project</em></h1>
+  <p>A beginner-friendly, step-by-step guide — from your first <code>echo</code> to a complete Student Login & CRUD app.</p>
+</div>
+
+<nav class="progress-nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="show(0)">🚀 Intro</button>
+    <button class="nav-btn" onclick="show(1)">📝 Syntax</button>
+    <button class="nav-btn" onclick="show(2)">📦 Variables</button>
+    <button class="nav-btn" onclick="show(3)">🔢 Data Types</button>
+    <button class="nav-btn" onclick="show(4)">➕ Operators</button>
+    <button class="nav-btn" onclick="show(5)">🔀 Control Flow</button>
+    <button class="nav-btn" onclick="show(6)">🔁 Loops</button>
+    <button class="nav-btn" onclick="show(7)">📋 Arrays</button>
+    <button class="nav-btn" onclick="show(8)">🔧 Functions</button>
+    <button class="nav-btn" onclick="show(9)">🌐 Forms</button>
+    <button class="nav-btn" onclick="show(10)">🗄️ MySQL</button>
+    <button class="nav-btn" onclick="show(11)">🔐 Sessions</button>
+    <button class="nav-btn" onclick="show(12)">🎯 Mini Project</button>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- 0: INTRO -->
+  <div class="section active" id="s0">
+    <div class="lesson-header">
+      <div class="lesson-num">🚀</div>
+      <div class="lesson-title">
+        <h2>What is PHP?</h2>
+        <p>Understanding the big picture before writing a single line</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🐘 PHP — Hypertext Preprocessor <span class="tag">Server-Side</span></h3>
+      <p style="color:var(--muted); margin-bottom:16px;">PHP is a scripting language that runs on the <strong>web server</strong>. When a user opens a webpage, PHP processes the code and sends plain HTML back to the browser.</p>
+      <div class="flow">
+        <div class="flow-step">👤 Browser<br><small>Request</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">🖥️ Web Server<br><small>Apache/Nginx</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">🐘 PHP<br><small>Processes</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">🗄️ MySQL<br><small>If needed</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">📄 HTML<br><small>Response</small></div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>✅ What PHP Can Do</h3>
+        <ul class="checklist">
+          <li>Create dynamic web pages</li>
+          <li>Handle HTML forms</li>
+          <li>Connect to databases (MySQL)</li>
+          <li>Manage sessions & cookies</li>
+          <li>Read/write files</li>
+          <li>Send emails</li>
+        </ul>
+      </div>
+      <div class="concept-card">
+        <h3>🛠️ Tools You Need</h3>
+        <ul class="checklist">
+          <li><strong>XAMPP</strong> — local server (Apache + MySQL + PHP)</li>
+          <li><strong>VS Code</strong> — code editor</li>
+          <li><strong>Browser</strong> — Chrome / Firefox</li>
+          <li>Files go in <code>htdocs</code> folder</li>
+          <li>Open via <code>localhost/yourfolder</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info-box tip">
+      <span class="icon">💡</span>
+      <div class="content"><strong>Teaching Tip:</strong> Install XAMPP first. Show students: Start Apache → Start MySQL → Open browser → type <code>localhost</code>. This "hello world" moment builds confidence!</div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📚 Recommended Teaching Order</h3>
+      <ul class="step-list">
+        <li><div class="step-dot">1</div><p><strong>Echo + Variables</strong> — Print something. Instant gratification.</p></li>
+        <li><div class="step-dot">2</div><p><strong>Data Types + Operators</strong> — What kinds of values exist.</p></li>
+        <li><div class="step-dot">3</div><p><strong>Control Flow + Loops</strong> — Decision making & repetition.</p></li>
+        <li><div class="step-dot">4</div><p><strong>Functions + Arrays</strong> — Organising code & data.</p></li>
+        <li><div class="step-dot">5</div><p><strong>Forms + MySQL</strong> — Real interaction with the user.</p></li>
+        <li><div class="step-dot">6</div><p><strong>Sessions</strong> — Login/Logout system.</p></li>
+        <li><div class="step-dot">7</div><p><strong>Mini Project</strong> — Student CRUD app to bring it all together.</p></li>
+      </ul>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" disabled>← Previous</button>
+      <button class="btn btn-primary" onclick="show(1)">Next: Basic Syntax →</button>
+    </div>
+  </div>
+
+  <!-- 1: SYNTAX -->
+  <div class="section" id="s1">
+    <div class="lesson-header">
+      <div class="lesson-num">1</div>
+      <div class="lesson-title">
+        <h2>Basic PHP Syntax</h2>
+        <p>How to write your first PHP code</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🏷️ PHP Tags <span class="tag">Required</span></h3>
+      <p style="color:var(--muted); margin-bottom:12px;">All PHP code must be wrapped inside PHP tags. The server looks for these tags to know where PHP starts and ends.</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+    <span class="cm">// Your PHP code goes here</span>
+    <span class="fn">echo</span> <span class="str">"Hello, Students!"</span>;
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>📢 echo vs print</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">echo</span> <span class="str">"Hello World"</span>;
+<span class="fn">print</span> <span class="str">"Hello World"</span>;
+
+<span class="cm">// echo is faster (preferred)</span>
+<span class="cm">// Both do the same thing</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>💬 Comments</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// Single line comment</span>
+
+<span class="cm">/* Multi-line
+   comment */</span>
+
+<span class="cm"># Also single line</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📄 PHP Inside HTML</h3>
+      <p style="color:var(--muted); margin-bottom:12px;">PHP and HTML can be mixed freely. PHP executes on the server, HTML is sent to the browser.</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;h1&gt;<span class="tag-php">&lt;?php</span> <span class="fn">echo</span> <span class="str">"Welcome to PHP!"</span>; <span class="tag-php">?&gt;</span>&lt;/h1&gt;
+    &lt;p&gt;Today is: <span class="tag-php">&lt;?php</span> <span class="fn">echo</span> <span class="fn">date</span>(<span class="str">"d-m-Y"</span>); <span class="tag-php">?&gt;</span>&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+      <div class="output-preview">
+        <strong>Browser Output:</strong><br>
+        <h2 style="margin:4px 0;font-size:1.1rem;">Welcome to PHP!</h2>
+        <p style="margin:0;">Today is: 17-03-2026</p>
+      </div>
+    </div>
+
+    <div class="info-box warn">
+      <span class="icon">⚠️</span>
+      <div class="content"><strong>Common Mistake:</strong> Forgetting the semicolon <code>;</code> at the end of each statement. Every PHP statement must end with <code>;</code></div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(0)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(2)">Next: Variables →</button>
+    </div>
+  </div>
+
+  <!-- 2: VARIABLES -->
+  <div class="section" id="s2">
+    <div class="lesson-header">
+      <div class="lesson-num">2</div>
+      <div class="lesson-title">
+        <h2>Variables</h2>
+        <p>Storing and using data in PHP</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📦 What is a Variable?</h3>
+      <p style="color:var(--muted); margin-bottom:12px;">A variable is a container that stores data. In PHP, all variables start with <code>$</code>.</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$name</span>  = <span class="str">"Ram"</span>;       <span class="cm">// String</span>
+<span class="var">$age</span>   = <span class="num">20</span>;         <span class="cm">// Integer</span>
+<span class="var">$marks</span> = <span class="num">85.5</span>;       <span class="cm">// Float</span>
+<span class="var">$pass</span>  = <span class="kw">true</span>;        <span class="cm">// Boolean</span>
+
+<span class="fn">echo</span> <span class="str">"Name: "</span> . <span class="var">$name</span>;   <span class="cm">// . joins strings</span>
+<span class="fn">echo</span> <span class="str">"Age: "</span>  . <span class="var">$age</span>;
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📏 Variable Rules</h3>
+      <table>
+        <tr><th>Rule</th><th>Example</th><th>Valid?</th></tr>
+        <tr><td>Must start with <code>$</code></td><td><code>$name</code></td><td>✅</td></tr>
+        <tr><td>Letters or underscore after <code>$</code></td><td><code>$_name</code></td><td>✅</td></tr>
+        <tr><td>Case-sensitive</td><td><code>$Name ≠ $name</code></td><td>⚠️</td></tr>
+        <tr><td>No spaces in name</td><td><code>$my name</code></td><td>❌</td></tr>
+        <tr><td>No starting with number</td><td><code>$1name</code></td><td>❌</td></tr>
+      </table>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>🔗 String Concatenation</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$first</span> = <span class="str">"Ram"</span>;
+<span class="var">$last</span>  = <span class="str">"Kumar"</span>;
+
+<span class="cm">// Using dot (.)</span>
+<span class="fn">echo</span> <span class="var">$first</span> . <span class="str">" "</span> . <span class="var">$last</span>;
+<span class="cm">// Output: Ram Kumar</span>
+
+<span class="cm">// Using double quotes</span>
+<span class="fn">echo</span> <span class="str">"$first $last"</span>;
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>🔄 Variable Variables</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// Shorthand assignment</span>
+<span class="var">$x</span>  = <span class="num">10</span>;
+<span class="var">$x</span> += <span class="num">5</span>;   <span class="cm">// $x = 15</span>
+<span class="var">$x</span> -= <span class="num">3</span>;   <span class="cm">// $x = 12</span>
+<span class="var">$x</span> .= <span class="str">"!"</span>;  <span class="cm">// $x = "12!"</span>
+<span class="fn">echo</span> <span class="var">$x</span>;
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box note">
+      <span class="icon">📝</span>
+      <div class="content"><strong>Note:</strong> PHP is <strong>loosely typed</strong> — you don't need to declare the type. PHP figures it out automatically: <code>$x = 5</code> is an integer, <code>$x = "5"</code> is a string.</div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(1)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(3)">Next: Data Types →</button>
+    </div>
+  </div>
+
+  <!-- 3: DATA TYPES -->
+  <div class="section" id="s3">
+    <div class="lesson-header">
+      <div class="lesson-num">3</div>
+      <div class="lesson-title">
+        <h2>Data Types</h2>
+        <p>Different kinds of values PHP can store</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🗂️ All PHP Data Types</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$name</span>    = <span class="str">"Ram"</span>;          <span class="cm">// String</span>
+<span class="var">$age</span>     = <span class="num">20</span>;             <span class="cm">// Integer</span>
+<span class="var">$marks</span>   = <span class="num">85.5</span>;           <span class="cm">// Float (decimal)</span>
+<span class="var">$isPass</span>  = <span class="kw">true</span>;            <span class="cm">// Boolean</span>
+<span class="var">$phone</span>   = <span class="kw">null</span>;            <span class="cm">// Null (no value)</span>
+<span class="var">$grades</span>  = [<span class="str">"A"</span>, <span class="str">"B"</span>, <span class="str">"C"</span>]; <span class="cm">// Array</span>
+
+<span class="cm">// Check type with gettype()</span>
+<span class="fn">echo</span> <span class="fn">gettype</span>(<span class="var">$name</span>);   <span class="cm">// string</span>
+<span class="fn">echo</span> <span class="fn">gettype</span>(<span class="var">$age</span>);    <span class="cm">// integer</span>
+<span class="fn">echo</span> <span class="fn">gettype</span>(<span class="var">$marks</span>);  <span class="cm">// double (float)</span>
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>🔠 String Functions <span class="tag green">Useful</span></h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$s</span> = <span class="str">"Hello World"</span>;
+
+<span class="fn">echo</span> <span class="fn">strlen</span>(<span class="var">$s</span>);       <span class="cm">// 11</span>
+<span class="fn">echo</span> <span class="fn">strtoupper</span>(<span class="var">$s</span>);   <span class="cm">// HELLO WORLD</span>
+<span class="fn">echo</span> <span class="fn">strtolower</span>(<span class="var">$s</span>);   <span class="cm">// hello world</span>
+<span class="fn">echo</span> <span class="fn">str_replace</span>(
+  <span class="str">"World"</span>, <span class="str">"PHP"</span>, <span class="var">$s</span>
+);  <span class="cm">// Hello PHP</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>🔢 Number Functions <span class="tag">Math</span></h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">echo</span> <span class="fn">abs</span>(<span class="num">-10</span>);      <span class="cm">// 10</span>
+<span class="fn">echo</span> <span class="fn">ceil</span>(<span class="num">4.3</span>);     <span class="cm">// 5</span>
+<span class="fn">echo</span> <span class="fn">floor</span>(<span class="num">4.9</span>);    <span class="cm">// 4</span>
+<span class="fn">echo</span> <span class="fn">round</span>(<span class="num">4.5</span>);    <span class="cm">// 5</span>
+<span class="fn">echo</span> <span class="fn">pow</span>(<span class="num">2</span>, <span class="num">3</span>);      <span class="cm">// 8</span>
+<span class="fn">echo</span> <span class="fn">sqrt</span>(<span class="num">16</span>);      <span class="cm">// 4</span>
+<span class="fn">echo</span> <span class="fn">rand</span>(<span class="num">1</span>, <span class="num">100</span>);  <span class="cm">// random</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box tip">
+      <span class="icon">💡</span>
+      <div class="content"><strong>Type Casting:</strong> You can convert between types: <code>(int)"42"</code> → 42, <code>(string)100</code> → "100", <code>(float)"3.14"</code> → 3.14</div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(2)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(4)">Next: Operators →</button>
+    </div>
+  </div>
+
+  <!-- 4: OPERATORS -->
+  <div class="section" id="s4">
+    <div class="lesson-header">
+      <div class="lesson-num">4</div>
+      <div class="lesson-title">
+        <h2>Operators</h2>
+        <p>Performing operations on values and variables</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>➕ Arithmetic Operators</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$a</span> = <span class="num">10</span>;
+<span class="var">$b</span> = <span class="num">3</span>;
+
+<span class="fn">echo</span> <span class="var">$a</span> + <span class="var">$b</span>;  <span class="cm">// 13</span>
+<span class="fn">echo</span> <span class="var">$a</span> - <span class="var">$b</span>;  <span class="cm">// 7</span>
+<span class="fn">echo</span> <span class="var">$a</span> * <span class="var">$b</span>;  <span class="cm">// 30</span>
+<span class="fn">echo</span> <span class="var">$a</span> / <span class="var">$b</span>;  <span class="cm">// 3.33</span>
+<span class="fn">echo</span> <span class="var">$a</span> % <span class="var">$b</span>;  <span class="cm">// 1 (remainder)</span>
+<span class="fn">echo</span> <span class="var">$a</span> ** <span class="var">$b</span>; <span class="cm">// 1000 (power)</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>🔍 Comparison Operators</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$a</span> = <span class="num">10</span>;  <span class="var">$b</span> = <span class="num">5</span>;
+
+<span class="var">$a</span> == <span class="var">$b</span>   <span class="cm">// Equal (false)</span>
+<span class="var">$a</span> != <span class="var">$b</span>   <span class="cm">// Not equal (true)</span>
+<span class="var">$a</span> &gt; <span class="var">$b</span>    <span class="cm">// Greater (true)</span>
+<span class="var">$a</span> &lt; <span class="var">$b</span>    <span class="cm">// Less (false)</span>
+<span class="var">$a</span> &gt;= <span class="var">$b</span>   <span class="cm">// Greater/equal</span>
+<span class="var">$a</span> === <span class="var">$b</span>  <span class="cm">// Identical (type+value)</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>🧠 Logical Operators</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$x</span> = <span class="kw">true</span>;
+<span class="var">$y</span> = <span class="kw">false</span>;
+
+<span class="var">$x</span> && <span class="var">$y</span>  <span class="cm">// AND → false</span>
+<span class="var">$x</span> || <span class="var">$y</span>  <span class="cm">// OR  → true</span>
+!<span class="var">$x</span>        <span class="cm">// NOT → false</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>⚡ Increment/Decrement</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$i</span> = <span class="num">5</span>;
+<span class="var">$i</span>++;   <span class="cm">// $i becomes 6</span>
+<span class="var">$i</span>--;   <span class="cm">// $i becomes 5</span>
+++<span class="var">$i</span>;   <span class="cm">// pre-increment</span>
+--<span class="var">$i</span>;   <span class="cm">// pre-decrement</span>
+<span class="fn">echo</span> <span class="var">$i</span>;  <span class="cm">// 5</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box warn">
+      <span class="icon">⚠️</span>
+      <div class="content"><strong>== vs ===:</strong> <code>==</code> checks value only (<code>"5" == 5</code> is true), <code>===</code> checks value AND type (<code>"5" === 5</code> is false). Use <code>===</code> for strict checking!</div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(3)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(5)">Next: Control Flow →</button>
+    </div>
+  </div>
+
+  <!-- 5: CONTROL FLOW -->
+  <div class="section" id="s5">
+    <div class="lesson-header">
+      <div class="lesson-num">5</div>
+      <div class="lesson-title">
+        <h2>Control Structures</h2>
+        <p>Making decisions in your PHP code</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔀 if / else if / else</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$marks</span> = <span class="num">72</span>;
+
+<span class="kw">if</span> (<span class="var">$marks</span> >= <span class="num">90</span>) {
+    <span class="fn">echo</span> <span class="str">"Grade: A+"</span>;
+} <span class="kw">elseif</span> (<span class="var">$marks</span> >= <span class="num">75</span>) {
+    <span class="fn">echo</span> <span class="str">"Grade: A"</span>;
+} <span class="kw">elseif</span> (<span class="var">$marks</span> >= <span class="num">60</span>) {
+    <span class="fn">echo</span> <span class="str">"Grade: B"</span>;   <span class="cm">// ← This runs</span>
+} <span class="kw">elseif</span> (<span class="var">$marks</span> >= <span class="num">50</span>) {
+    <span class="fn">echo</span> <span class="str">"Grade: C"</span>;
+} <span class="kw">else</span> {
+    <span class="fn">echo</span> <span class="str">"Fail"</span>;
+}
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔁 switch Statement</h3>
+      <p style="color:var(--muted); margin-bottom:12px;">Use <code>switch</code> when you have many possible values for one variable. Cleaner than many if-elseif chains.</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$day</span> = <span class="num">3</span>;
+
+<span class="kw">switch</span> (<span class="var">$day</span>) {
+    <span class="kw">case</span> <span class="num">1</span>: <span class="fn">echo</span> <span class="str">"Monday"</span>;    <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">2</span>: <span class="fn">echo</span> <span class="str">"Tuesday"</span>;   <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">3</span>: <span class="fn">echo</span> <span class="str">"Wednesday"</span>; <span class="kw">break</span>; <span class="cm">// ← runs</span>
+    <span class="kw">case</span> <span class="num">4</span>: <span class="fn">echo</span> <span class="str">"Thursday"</span>;  <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">5</span>: <span class="fn">echo</span> <span class="str">"Friday"</span>;    <span class="kw">break</span>;
+    <span class="kw">default</span>: <span class="fn">echo</span> <span class="str">"Weekend!"</span>;
+}
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>❓ Ternary Operator <span class="tag green">Shortcut</span></h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$marks</span> = <span class="num">55</span>;
+
+<span class="cm">// Long way:</span>
+<span class="kw">if</span> (<span class="var">$marks</span> >= <span class="num">50</span>) { <span class="var">$result</span> = <span class="str">"Pass"</span>; }
+<span class="kw">else</span> { <span class="var">$result</span> = <span class="str">"Fail"</span>; }
+
+<span class="cm">// Ternary shortcut:</span>
+<span class="var">$result</span> = (<span class="var">$marks</span> >= <span class="num">50</span>) ? <span class="str">"Pass"</span> : <span class="str">"Fail"</span>;
+
+<span class="fn">echo</span> <span class="var">$result</span>; <span class="cm">// Pass</span>
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="info-box warn">
+      <span class="icon">⚠️</span>
+      <div class="content"><strong>Don't forget <code>break</code> in switch!</strong> Without it, PHP will "fall through" and execute the next case too.</div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(4)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(6)">Next: Loops →</button>
+    </div>
+  </div>
+
+  <!-- 6: LOOPS -->
+  <div class="section" id="s6">
+    <div class="lesson-header">
+      <div class="lesson-num">6</div>
+      <div class="lesson-title">
+        <h2>Loops</h2>
+        <p>Repeating code multiple times efficiently</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>🔁 for Loop</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// Print 1 to 5</span>
+<span class="kw">for</span> (<span class="var">$i</span>=<span class="num">1</span>; <span class="var">$i</span>&lt;=<span class="num">5</span>; <span class="var">$i</span>++) {
+    <span class="fn">echo</span> <span class="var">$i</span> . <span class="str">"&lt;br&gt;"</span>;
+}
+
+<span class="cm">// Countdown</span>
+<span class="kw">for</span> (<span class="var">$i</span>=<span class="num">5</span>; <span class="var">$i</span>&gt;=<span class="num">1</span>; <span class="var">$i</span>--) {
+    <span class="fn">echo</span> <span class="var">$i</span> . <span class="str">" "</span>;
+}
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>🔄 while Loop</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$i</span> = <span class="num">1</span>;
+
+<span class="kw">while</span> (<span class="var">$i</span> &lt;= <span class="num">5</span>) {
+    <span class="fn">echo</span> <span class="var">$i</span> . <span class="str">"&lt;br&gt;"</span>;
+    <span class="var">$i</span>++;
+}
+
+<span class="cm">// do-while (runs at least once)</span>
+<span class="kw">do</span> {
+    <span class="fn">echo</span> <span class="var">$i</span>;
+    <span class="var">$i</span>++;
+} <span class="kw">while</span> (<span class="var">$i</span> &lt;= <span class="num">3</span>);
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🎯 Practical Loop Examples</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// Multiplication Table for 5</span>
+<span class="kw">for</span> (<span class="var">$i</span>=<span class="num">1</span>; <span class="var">$i</span>&lt;=<span class="num">10</span>; <span class="var">$i</span>++) {
+    <span class="fn">echo</span> <span class="str">"5 x $i = "</span> . (<span class="num">5</span>*<span class="var">$i</span>) . <span class="str">"&lt;br&gt;"</span>;
+}
+
+<span class="cm">// Sum of 1 to 100</span>
+<span class="var">$sum</span> = <span class="num">0</span>;
+<span class="kw">for</span> (<span class="var">$i</span>=<span class="num">1</span>; <span class="var">$i</span>&lt;=<span class="num">100</span>; <span class="var">$i</span>++) {
+    <span class="var">$sum</span> += <span class="var">$i</span>;
+}
+<span class="fn">echo</span> <span class="str">"Sum = "</span> . <span class="var">$sum</span>; <span class="cm">// 5050</span>
+
+<span class="cm">// break and continue</span>
+<span class="kw">for</span> (<span class="var">$i</span>=<span class="num">1</span>; <span class="var">$i</span>&lt;=<span class="num">10</span>; <span class="var">$i</span>++) {
+    <span class="kw">if</span> (<span class="var">$i</span> == <span class="num">5</span>) <span class="kw">continue</span>; <span class="cm">// skip 5</span>
+    <span class="kw">if</span> (<span class="var">$i</span> == <span class="num">8</span>) <span class="kw">break</span>;    <span class="cm">// stop at 8</span>
+    <span class="fn">echo</span> <span class="var">$i</span> . <span class="str">" "</span>; <span class="cm">// 1 2 3 4 6 7</span>
+}
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(5)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(7)">Next: Arrays →</button>
+    </div>
+  </div>
+
+  <!-- 7: ARRAYS -->
+  <div class="section" id="s7">
+    <div class="lesson-header">
+      <div class="lesson-num">7</div>
+      <div class="lesson-title">
+        <h2>Arrays</h2>
+        <p>Storing multiple values in one variable</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📋 Indexed Array</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$students</span> = [<span class="str">"Ram"</span>, <span class="str">"Sita"</span>, <span class="str">"Ravi"</span>, <span class="str">"Priya"</span>];
+<span class="cm">//             [0]     [1]     [2]     [3]</span>
+
+<span class="fn">echo</span> <span class="var">$students</span>[<span class="num">0</span>];  <span class="cm">// Ram</span>
+<span class="fn">echo</span> <span class="var">$students</span>[<span class="num">2</span>];  <span class="cm">// Ravi</span>
+
+<span class="cm">// Loop through</span>
+<span class="kw">foreach</span> (<span class="var">$students</span> <span class="kw">as</span> <span class="var">$name</span>) {
+    <span class="fn">echo</span> <span class="var">$name</span> . <span class="str">"&lt;br&gt;"</span>;
+}
+
+<span class="fn">echo</span> <span class="fn">count</span>(<span class="var">$students</span>);  <span class="cm">// 4</span>
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🗂️ Associative Array (Key → Value)</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$student</span> = [
+    <span class="str">"name"</span>   => <span class="str">"Ram Kumar"</span>,
+    <span class="str">"roll"</span>   => <span class="str">"CS101"</span>,
+    <span class="str">"marks"</span>  => <span class="num">85</span>,
+    <span class="str">"branch"</span> => <span class="str">"CSE"</span>
+];
+
+<span class="fn">echo</span> <span class="var">$student</span>[<span class="str">"name"</span>];    <span class="cm">// Ram Kumar</span>
+<span class="fn">echo</span> <span class="var">$student</span>[<span class="str">"marks"</span>];   <span class="cm">// 85</span>
+
+<span class="kw">foreach</span> (<span class="var">$student</span> <span class="kw">as</span> <span class="var">$key</span> => <span class="var">$value</span>) {
+    <span class="fn">echo</span> <span class="str">"$key: $value &lt;br&gt;"</span>;
+}
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔧 Useful Array Functions</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$nums</span> = [<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>, <span class="num">9</span>];
+
+<span class="fn">sort</span>(<span class="var">$nums</span>);           <span class="cm">// [1,1,3,4,5,9]</span>
+<span class="fn">array_push</span>(<span class="var">$nums</span>, <span class="num">2</span>); <span class="cm">// add to end</span>
+<span class="fn">array_pop</span>(<span class="var">$nums</span>);     <span class="cm">// remove last</span>
+<span class="fn">array_merge</span>(<span class="var">$a</span>, <span class="var">$b</span>);  <span class="cm">// combine arrays</span>
+<span class="fn">in_array</span>(<span class="num">5</span>, <span class="var">$nums</span>);   <span class="cm">// true/false</span>
+<span class="fn">array_unique</span>(<span class="var">$nums</span>);  <span class="cm">// remove duplicates</span>
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(6)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(8)">Next: Functions →</button>
+    </div>
+  </div>
+
+  <!-- 8: FUNCTIONS -->
+  <div class="section" id="s8">
+    <div class="lesson-header">
+      <div class="lesson-num">8</div>
+      <div class="lesson-title">
+        <h2>Functions</h2>
+        <p>Reusable blocks of code</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔧 Basic Function</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// Define the function</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="var">$name</span>) {
+    <span class="kw">return</span> <span class="str">"Hello, "</span> . <span class="var">$name</span> . <span class="str">"!"</span>;
+}
+
+<span class="cm">// Call the function</span>
+<span class="fn">echo</span> <span class="fn">greet</span>(<span class="str">"Ram"</span>);    <span class="cm">// Hello, Ram!</span>
+<span class="fn">echo</span> <span class="fn">greet</span>(<span class="str">"Sita"</span>);   <span class="cm">// Hello, Sita!</span>
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>⚙️ Default Parameters</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="kw">function</span> <span class="fn">power</span>(<span class="var">$base</span>, <span class="var">$exp</span>=<span class="num">2</span>) {
+    <span class="kw">return</span> <span class="fn">pow</span>(<span class="var">$base</span>, <span class="var">$exp</span>);
+}
+
+<span class="fn">echo</span> <span class="fn">power</span>(<span class="num">3</span>);      <span class="cm">// 9 (3²)</span>
+<span class="fn">echo</span> <span class="fn">power</span>(<span class="num">3</span>, <span class="num">3</span>);   <span class="cm">// 27 (3³)</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>🔢 Return Values</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="kw">function</span> <span class="fn">calculate</span>(<span class="var">$a</span>, <span class="var">$b</span>) {
+    <span class="kw">return</span> [
+        <span class="str">"sum"</span>  => <span class="var">$a</span> + <span class="var">$b</span>,
+        <span class="str">"diff"</span> => <span class="var">$a</span> - <span class="var">$b</span>,
+        <span class="str">"prod"</span> => <span class="var">$a</span> * <span class="var">$b</span>
+    ];
+}
+
+<span class="var">$r</span> = <span class="fn">calculate</span>(<span class="num">10</span>, <span class="num">5</span>);
+<span class="fn">echo</span> <span class="var">$r</span>[<span class="str">"sum"</span>];  <span class="cm">// 15</span>
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🌍 Variable Scope</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$name</span> = <span class="str">"Global Ram"</span>;
+
+<span class="kw">function</span> <span class="fn">test</span>() {
+    <span class="cm">// $name not accessible here by default!</span>
+    <span class="kw">global</span> <span class="var">$name</span>;  <span class="cm">// use global keyword</span>
+    <span class="fn">echo</span> <span class="var">$name</span>;     <span class="cm">// Now works</span>
+}
+
+<span class="fn">test</span>(); <span class="cm">// Global Ram</span>
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(7)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(9)">Next: Forms →</button>
+    </div>
+  </div>
+
+  <!-- 9: FORMS -->
+  <div class="section" id="s9">
+    <div class="lesson-header">
+      <div class="lesson-num">9</div>
+      <div class="lesson-title">
+        <h2>Form Handling</h2>
+        <p>Getting input from users via HTML forms</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📝 HTML Form → PHP Processing</h3>
+      <p style="color:var(--muted); margin-bottom:12px;"><strong>File: form.html</strong></p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre>&lt;form method="<span class="hl">post</span>" action="<span class="hl">process.php</span>"&gt;
+  &lt;label&gt;Name:&lt;/label&gt;
+  &lt;input type="text" name="<span class="hl">name</span>" required&gt;
+
+  &lt;label&gt;Email:&lt;/label&gt;
+  &lt;input type="email" name="<span class="hl">email</span>" required&gt;
+
+  &lt;label&gt;Age:&lt;/label&gt;
+  &lt;input type="number" name="<span class="hl">age</span>"&gt;
+
+  &lt;input type="submit" value="Submit"&gt;
+&lt;/form&gt;</pre>
+      </div>
+
+      <p style="color:var(--muted); margin: 16px 0 8px;"><strong>File: process.php</strong></p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="kw">if</span> (<span class="var">$_SERVER</span>[<span class="str">"REQUEST_METHOD"</span>] == <span class="str">"POST"</span>) {
+
+    <span class="cm">// Get & sanitize input</span>
+    <span class="var">$name</span>  = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"name"</span>]);
+    <span class="var">$email</span> = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"email"</span>]);
+    <span class="var">$age</span>   = <span class="fn">intval</span>(<span class="var">$_POST</span>[<span class="str">"age"</span>]);
+
+    <span class="cm">// Validate</span>
+    <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$name</span>)) {
+        <span class="fn">echo</span> <span class="str">"Error: Name is required!"</span>;
+    } <span class="kw">else</span> {
+        <span class="fn">echo</span> <span class="str">"Welcome, $name! Age: $age"</span>;
+    }
+}
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>📬 GET vs POST</h3>
+        <table>
+          <tr><th></th><th>GET</th><th>POST</th></tr>
+          <tr><td>Visible in URL</td><td>✅ Yes</td><td>❌ No</td></tr>
+          <tr><td>Max size</td><td>~2KB</td><td>Unlimited</td></tr>
+          <tr><td>Use for</td><td>Search/filter</td><td>Login/forms</td></tr>
+          <tr><td>Bookmarkable</td><td>✅ Yes</td><td>❌ No</td></tr>
+        </table>
+      </div>
+      <div class="concept-card">
+        <h3>🛡️ Security Tips</h3>
+        <ul class="checklist">
+          <li><code>htmlspecialchars()</code> — prevent XSS</li>
+          <li><code>intval()</code> — force integer</li>
+          <li><code>empty()</code> — check empty</li>
+          <li><code>isset()</code> — check exists</li>
+          <li>Always validate server-side</li>
+          <li>Use prepared statements for DB</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(8)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(10)">Next: MySQL →</button>
+    </div>
+  </div>
+
+  <!-- 10: MYSQL -->
+  <div class="section" id="s10">
+    <div class="lesson-header">
+      <div class="lesson-num">10</div>
+      <div class="lesson-title">
+        <h2>MySQL Database</h2>
+        <p>Connecting PHP to a database for persistent storage</p>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔌 Connecting to MySQL</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// db_config.php — include this in every file</span>
+<span class="var">$host</span> = <span class="str">"localhost"</span>;
+<span class="var">$user</span> = <span class="str">"root"</span>;
+<span class="var">$pass</span> = <span class="str">""</span>;
+<span class="var">$db</span>   = <span class="str">"student_db"</span>;
+
+<span class="var">$conn</span> = <span class="fn">mysqli_connect</span>(<span class="var">$host</span>, <span class="var">$user</span>, <span class="var">$pass</span>, <span class="var">$db</span>);
+
+<span class="kw">if</span> (!<span class="var">$conn</span>) {
+    <span class="fn">die</span>(<span class="str">"Connection failed: "</span> . <span class="fn">mysqli_connect_error</span>());
+}
+<span class="cm">// Connection successful!</span>
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📋 CRUD Operations</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// CREATE — Insert</span>
+<span class="var">$sql</span> = <span class="str">"INSERT INTO students (name, email, marks)
+        VALUES ('Ram', 'ram@email.com', 85)"</span>;
+<span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="var">$sql</span>);
+
+<span class="cm">// READ — Select All</span>
+<span class="var">$sql</span> = <span class="str">"SELECT * FROM students"</span>;
+<span class="var">$result</span> = <span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="var">$sql</span>);
+<span class="kw">while</span> (<span class="var">$row</span> = <span class="fn">mysqli_fetch_assoc</span>(<span class="var">$result</span>)) {
+    <span class="fn">echo</span> <span class="var">$row</span>[<span class="str">"name"</span>] . <span class="str">" - "</span> . <span class="var">$row</span>[<span class="str">"marks"</span>];
+}
+
+<span class="cm">// UPDATE</span>
+<span class="var">$sql</span> = <span class="str">"UPDATE students SET marks=90 WHERE id=1"</span>;
+<span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="var">$sql</span>);
+
+<span class="cm">// DELETE</span>
+<span class="var">$sql</span> = <span class="str">"DELETE FROM students WHERE id=1"</span>;
+<span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="var">$sql</span>);
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🛡️ Prepared Statements <span class="tag green">Secure</span></h3>
+      <p style="color:var(--muted); margin-bottom:12px;">Always use prepared statements to prevent SQL Injection attacks!</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// Safe way to insert user data</span>
+<span class="var">$stmt</span> = <span class="fn">mysqli_prepare</span>(<span class="var">$conn</span>,
+    <span class="str">"INSERT INTO students (name, email) VALUES (?, ?)"</span>
+);
+
+<span class="fn">mysqli_stmt_bind_param</span>(<span class="var">$stmt</span>, <span class="str">"ss"</span>,
+    <span class="var">$name</span>, <span class="var">$email</span>  <span class="cm">// "ss" = string, string</span>
+);
+
+<span class="var">$name</span>  = <span class="var">$_POST</span>[<span class="str">"name"</span>];
+<span class="var">$email</span> = <span class="var">$_POST</span>[<span class="str">"email"</span>];
+
+<span class="fn">mysqli_stmt_execute</span>(<span class="var">$stmt</span>);
+<span class="fn">echo</span> <span class="str">"Student added safely!"</span>;
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(9)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(11)">Next: Sessions →</button>
+    </div>
+  </div>
+
+  <!-- 11: SESSIONS -->
+  <div class="section" id="s11">
+    <div class="lesson-header">
+      <div class="lesson-num">11</div>
+      <div class="lesson-title">
+        <h2>Sessions & Cookies</h2>
+        <p>Remembering users across pages</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="concept-card">
+        <h3>🔐 Sessions</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// ALWAYS at the top!</span>
+<span class="fn">session_start</span>();
+
+<span class="cm">// Store data</span>
+<span class="var">$_SESSION</span>[<span class="str">"user"</span>]  = <span class="str">"Ram"</span>;
+<span class="var">$_SESSION</span>[<span class="str">"role"</span>]  = <span class="str">"student"</span>;
+<span class="var">$_SESSION</span>[<span class="str">"loggedIn"</span>] = <span class="kw">true</span>;
+
+<span class="cm">// Read data (another page)</span>
+<span class="fn">echo</span> <span class="var">$_SESSION</span>[<span class="str">"user"</span>];
+
+<span class="cm">// Destroy session (logout)</span>
+<span class="fn">session_destroy</span>();
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+      <div class="concept-card">
+        <h3>🍪 Cookies</h3>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="tag-php">&lt;?php</span>
+<span class="cm">// Set cookie (1 hour)</span>
+<span class="fn">setcookie</span>(
+    <span class="str">"username"</span>,
+    <span class="str">"Ram"</span>,
+    <span class="fn">time</span>() + <span class="num">3600</span>
+);
+
+<span class="cm">// Read cookie</span>
+<span class="fn">echo</span> <span class="var">$_COOKIE</span>[<span class="str">"username"</span>];
+
+<span class="cm">// Delete cookie</span>
+<span class="fn">setcookie</span>(<span class="str">"username"</span>, <span class="str">""</span>, <span class="fn">time</span>()-<span class="num">1</span>);
+<span class="tag-php">?&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔒 Login System Pattern</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">session_start</span>();
+
+<span class="cm">// Protect a page — redirect if not logged in</span>
+<span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$_SESSION</span>[<span class="str">"loggedIn"</span>])) {
+    <span class="fn">header</span>(<span class="str">"Location: login.php"</span>);
+    <span class="fn">exit</span>();
+}
+
+<span class="cm">// Logout</span>
+<span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$_GET</span>[<span class="str">"logout"</span>])) {
+    <span class="fn">session_destroy</span>();
+    <span class="fn">header</span>(<span class="str">"Location: login.php"</span>);
+    <span class="fn">exit</span>();
+}
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="info-box note">
+      <span class="icon">📝</span>
+      <div class="content"><strong>Session vs Cookie:</strong> Sessions are stored on the server (more secure). Cookies are stored on the user's browser (can be seen/edited). Use sessions for login info, cookies for preferences like "remember me".</div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(10)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(12)">Next: Mini Project →</button>
+    </div>
+  </div>
+
+  <!-- 12: MINI PROJECT -->
+  <div class="section" id="s12">
+    <div class="lesson-header">
+      <div class="lesson-num">🎯</div>
+      <div class="lesson-title">
+        <h2>Mini Project: Student Management</h2>
+        <p>Login + Logout + View + Add + Edit + Delete student records</p>
+      </div>
+    </div>
+
+    <div class="project-section">
+      <h3>🏗️ Project Overview</h3>
+      <p style="color:var(--muted); font-size:0.9rem; margin-bottom:20px;">A complete Student CRUD app with Login/Logout — a perfect capstone that uses everything learned so far.</p>
+      <div class="file-tree">
+        <div class="folder">📁 student_app/</div>
+        <div class="indent"><span class="file">📄 db_config.php</span>   &nbsp;&nbsp;← database connection</div>
+        <div class="indent"><span class="file">📄 login.php</span>        &nbsp;&nbsp;← login form + auth</div>
+        <div class="indent"><span class="file">📄 logout.php</span>       &nbsp;&nbsp;← destroy session</div>
+        <div class="indent"><span class="file">📄 index.php</span>        &nbsp;&nbsp;← list all students</div>
+        <div class="indent"><span class="file">📄 add.php</span>          &nbsp;&nbsp;← add new student</div>
+        <div class="indent"><span class="file">📄 edit.php</span>         &nbsp;&nbsp;← edit student</div>
+        <div class="indent"><span class="file">📄 delete.php</span>       &nbsp;&nbsp;← delete student</div>
+        <div class="indent"><span class="folder">📁 css/</span></div>
+        <div class="indent2"><span class="file">📄 style.css</span>       &nbsp;&nbsp;← basic styling</div>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🗄️ Step 1: Create Database <span class="tag yellow">SQL</span></h3>
+      <p style="color:var(--muted); margin-bottom:12px;">Run this in phpMyAdmin → SQL tab:</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="cm">-- Create database</span>
+<span class="kw">CREATE DATABASE</span> student_db;
+<span class="kw">USE</span> student_db;
+
+<span class="cm">-- Students table</span>
+<span class="kw">CREATE TABLE</span> students (
+    id      <span class="hl">INT AUTO_INCREMENT PRIMARY KEY</span>,
+    name    <span class="hl">VARCHAR(100)</span> NOT NULL,
+    email   <span class="hl">VARCHAR(100)</span> UNIQUE NOT NULL,
+    branch  <span class="hl">VARCHAR(50)</span>,
+    marks   <span class="hl">INT</span>,
+    created <span class="hl">TIMESTAMP DEFAULT CURRENT_TIMESTAMP</span>
+);
+
+<span class="cm">-- Admin login table</span>
+<span class="kw">CREATE TABLE</span> admins (
+    id       <span class="hl">INT AUTO_INCREMENT PRIMARY KEY</span>,
+    username <span class="hl">VARCHAR(50)</span> NOT NULL,
+    password <span class="hl">VARCHAR(255)</span> NOT NULL
+);
+
+<span class="cm">-- Insert a test admin (password: admin123)</span>
+<span class="kw">INSERT INTO</span> admins (username, password)
+<span class="kw">VALUES</span> (<span class="str">'admin'</span>, MD5(<span class="str">'admin123'</span>));</pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔌 Step 2: db_config.php</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="var">$conn</span> = <span class="fn">mysqli_connect</span>(<span class="str">"localhost"</span>, <span class="str">"root"</span>, <span class="str">""</span>, <span class="str">"student_db"</span>);
+
+<span class="kw">if</span> (!<span class="var">$conn</span>) {
+    <span class="fn">die</span>(<span class="str">"❌ Connection Failed: "</span> . <span class="fn">mysqli_connect_error</span>());
+}
+<span class="tag-php">?&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🔐 Step 3: login.php</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">session_start</span>();
+<span class="kw">require</span> <span class="str">'db_config.php'</span>;
+
+<span class="kw">if</span> (<span class="var">$_SERVER</span>[<span class="str">"REQUEST_METHOD"</span>] == <span class="str">"POST"</span>) {
+    <span class="var">$user</span> = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"username"</span>]);
+    <span class="var">$pass</span> = <span class="fn">md5</span>(<span class="var">$_POST</span>[<span class="str">"password"</span>]); <span class="cm">// hash</span>
+
+    <span class="var">$sql</span> = <span class="str">"SELECT * FROM admins
+            WHERE username='$user' AND password='$pass'"</span>;
+    <span class="var">$res</span> = <span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="var">$sql</span>);
+
+    <span class="kw">if</span> (<span class="fn">mysqli_num_rows</span>(<span class="var">$res</span>) == <span class="num">1</span>) {
+        <span class="var">$_SESSION</span>[<span class="str">"loggedIn"</span>]  = <span class="kw">true</span>;
+        <span class="var">$_SESSION</span>[<span class="str">"username"</span>] = <span class="var">$user</span>;
+        <span class="fn">header</span>(<span class="str">"Location: index.php"</span>);
+    } <span class="kw">else</span> {
+        <span class="var">$error</span> = <span class="str">"Invalid username or password!"</span>;
+    }
+}
+<span class="tag-php">?&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Login&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;Admin Login&lt;/h2&gt;
+  <span class="tag-php">&lt;?php</span> <span class="kw">if</span>(<span class="fn">isset</span>(<span class="var">$error</span>)) <span class="fn">echo</span> <span class="str">"&lt;p style='color:red'&gt;$error&lt;/p&gt;"</span>; <span class="tag-php">?&gt;</span>
+  &lt;form method="post"&gt;
+    &lt;input type="text" name="username" placeholder="Username" required&gt;&lt;br&gt;
+    &lt;input type="password" name="password" placeholder="Password" required&gt;&lt;br&gt;
+    &lt;button type="submit"&gt;Login&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>📋 Step 4: index.php (List Students)</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">session_start</span>();
+<span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$_SESSION</span>[<span class="str">"loggedIn"</span>])) { <span class="fn">header</span>(<span class="str">"Location: login.php"</span>); <span class="fn">exit</span>(); }
+<span class="kw">require</span> <span class="str">'db_config.php'</span>;
+
+<span class="var">$result</span> = <span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="str">"SELECT * FROM students ORDER BY id DESC"</span>);
+<span class="tag-php">?&gt;</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Students&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;Student List&lt;/h2&gt;
+  &lt;a href="add.php"&gt;+ Add Student&lt;/a&gt; | &lt;a href="logout.php"&gt;Logout&lt;/a&gt;
+
+  &lt;table border="1"&gt;
+    &lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Email&lt;/th&gt;&lt;th&gt;Branch&lt;/th&gt;&lt;th&gt;Marks&lt;/th&gt;&lt;th&gt;Actions&lt;/th&gt;&lt;/tr&gt;
+    <span class="tag-php">&lt;?php</span> <span class="kw">while</span> (<span class="var">$row</span> = <span class="fn">mysqli_fetch_assoc</span>(<span class="var">$result</span>)): <span class="tag-php">?&gt;</span>
+    &lt;tr&gt;
+      &lt;td&gt;<span class="tag-php">&lt;?= $row["id"] ?&gt;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="tag-php">&lt;?= $row["name"] ?&gt;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="tag-php">&lt;?= $row["email"] ?&gt;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="tag-php">&lt;?= $row["branch"] ?&gt;</span>&lt;/td&gt;
+      &lt;td&gt;<span class="tag-php">&lt;?= $row["marks"] ?&gt;</span>&lt;/td&gt;
+      &lt;td&gt;
+        &lt;a href="edit.php?id=<span class="tag-php">&lt;?= $row["id"] ?&gt;</span>"&gt;Edit&lt;/a&gt; |
+        &lt;a href="delete.php?id=<span class="tag-php">&lt;?= $row["id"] ?&gt;</span>"
+           onclick="return confirm('Delete?')"&gt;Delete&lt;/a&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    <span class="tag-php">&lt;?php</span> <span class="kw">endwhile</span>; <span class="tag-php">?&gt;</span>
+  &lt;/table&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>➕ Step 5: add.php (Add Student)</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">session_start</span>();
+<span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$_SESSION</span>[<span class="str">"loggedIn"</span>])) { <span class="fn">header</span>(<span class="str">"Location: login.php"</span>); <span class="fn">exit</span>(); }
+<span class="kw">require</span> <span class="str">'db_config.php'</span>;
+
+<span class="kw">if</span> (<span class="var">$_SERVER</span>[<span class="str">"REQUEST_METHOD"</span>] == <span class="str">"POST"</span>) {
+    <span class="var">$name</span>   = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"name"</span>]);
+    <span class="var">$email</span>  = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"email"</span>]);
+    <span class="var">$branch</span> = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"branch"</span>]);
+    <span class="var">$marks</span>  = <span class="fn">intval</span>(<span class="var">$_POST</span>[<span class="str">"marks"</span>]);
+
+    <span class="var">$sql</span> = <span class="str">"INSERT INTO students (name,email,branch,marks)
+            VALUES ('$name','$email','$branch',$marks)"</span>;
+
+    <span class="kw">if</span> (<span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="var">$sql</span>)) {
+        <span class="fn">header</span>(<span class="str">"Location: index.php"</span>);
+    } <span class="kw">else</span> {
+        <span class="fn">echo</span> <span class="str">"Error: "</span> . <span class="fn">mysqli_error</span>(<span class="var">$conn</span>);
+    }
+}
+<span class="tag-php">?&gt;</span>
+&lt;h2&gt;Add Student&lt;/h2&gt;
+&lt;a href="index.php"&gt;← Back&lt;/a&gt;
+&lt;form method="post"&gt;
+  Name:   &lt;input type="text" name="name" required&gt;&lt;br&gt;
+  Email:  &lt;input type="email" name="email" required&gt;&lt;br&gt;
+  Branch: &lt;select name="branch"&gt;
+    &lt;option&gt;CSE&lt;/option&gt;&lt;option&gt;ECE&lt;/option&gt;
+    &lt;option&gt;MECH&lt;/option&gt;&lt;option&gt;CIVIL&lt;/option&gt;
+  &lt;/select&gt;&lt;br&gt;
+  Marks:  &lt;input type="number" name="marks" min="0" max="100"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Add Student&lt;/button&gt;
+&lt;/form&gt;</pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>✏️ Step 6: edit.php (Edit Student)</h3>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">session_start</span>();
+<span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$_SESSION</span>[<span class="str">"loggedIn"</span>])) { <span class="fn">header</span>(<span class="str">"Location: login.php"</span>); <span class="fn">exit</span>(); }
+<span class="kw">require</span> <span class="str">'db_config.php'</span>;
+
+<span class="var">$id</span>  = <span class="fn">intval</span>(<span class="var">$_GET</span>[<span class="str">"id"</span>]);
+<span class="var">$row</span> = <span class="fn">mysqli_fetch_assoc</span>(
+    <span class="fn">mysqli_query</span>(<span class="var">$conn</span>, <span class="str">"SELECT * FROM students WHERE id=$id"</span>)
+);
+
+<span class="kw">if</span> (<span class="var">$_SERVER</span>[<span class="str">"REQUEST_METHOD"</span>] == <span class="str">"POST"</span>) {
+    <span class="var">$name</span>   = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"name"</span>]);
+    <span class="var">$email</span>  = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"email"</span>]);
+    <span class="var">$branch</span> = <span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"branch"</span>]);
+    <span class="var">$marks</span>  = <span class="fn">intval</span>(<span class="var">$_POST</span>[<span class="str">"marks"</span>]);
+
+    <span class="fn">mysqli_query</span>(<span class="var">$conn</span>,
+        <span class="str">"UPDATE students SET name='$name', email='$email',
+         branch='$branch', marks=$marks WHERE id=$id"</span>
+    );
+    <span class="fn">header</span>(<span class="str">"Location: index.php"</span>);
+}
+<span class="tag-php">?&gt;</span>
+&lt;h2&gt;Edit Student&lt;/h2&gt;
+&lt;a href="index.php"&gt;← Back&lt;/a&gt;
+&lt;form method="post"&gt;
+  Name:  &lt;input type="text" name="name"
+         value="<span class="tag-php">&lt;?= $row["name"] ?&gt;</span>" required&gt;&lt;br&gt;
+  Email: &lt;input type="email" name="email"
+         value="<span class="tag-php">&lt;?= $row["email"] ?&gt;</span>" required&gt;&lt;br&gt;
+  Branch: &lt;input type="text" name="branch"
+          value="<span class="tag-php">&lt;?= $row["branch"] ?&gt;</span>"&gt;&lt;br&gt;
+  Marks: &lt;input type="number" name="marks"
+         value="<span class="tag-php">&lt;?= $row["marks"] ?&gt;</span>"&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Update Student&lt;/button&gt;
+&lt;/form&gt;</pre>
+      </div>
+    </div>
+
+    <div class="concept-card">
+      <h3>🗑️ Step 7: delete.php & logout.php</h3>
+      <div class="two-col">
+        <div>
+          <p style="color:var(--muted); font-size:0.85rem; margin-bottom:8px;"><strong>delete.php</strong></p>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">session_start</span>();
+<span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$_SESSION</span>[<span class="str">"loggedIn"</span>]))
+    <span class="fn">header</span>(<span class="str">"Location: login.php"</span>); <span class="fn">exit</span>();
+
+<span class="kw">require</span> <span class="str">'db_config.php'</span>;
+<span class="var">$id</span> = <span class="fn">intval</span>(<span class="var">$_GET</span>[<span class="str">"id"</span>]);
+
+<span class="fn">mysqli_query</span>(<span class="var">$conn</span>,
+    <span class="str">"DELETE FROM students WHERE id=$id"</span>
+);
+<span class="fn">header</span>(<span class="str">"Location: index.php"</span>);
+<span class="tag-php">?&gt;</span></pre>
+          </div>
+        </div>
+        <div>
+          <p style="color:var(--muted); font-size:0.85rem; margin-bottom:8px;"><strong>logout.php</strong></p>
+          <div class="code-wrap">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><span class="tag-php">&lt;?php</span>
+<span class="fn">session_start</span>();
+
+<span class="cm">// Clear all session data</span>
+<span class="var">$_SESSION</span> = [];
+<span class="fn">session_destroy</span>();
+
+<span class="fn">header</span>(<span class="str">"Location: login.php"</span>);
+<span class="fn">exit</span>();
+<span class="tag-php">?&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-section">
+      <h3>🎓 Practice Tasks for Students</h3>
+      <div class="two-col" style="margin-top:16px;">
+        <div class="practice-card">
+          <h4>Task 1 — Basic</h4>
+          <p>Add a search box on index.php to search students by name.</p>
+        </div>
+        <div class="practice-card">
+          <h4>Task 2 — Basic</h4>
+          <p>Show student count at the top of the list page.</p>
+        </div>
+        <div class="practice-card">
+          <h4>Task 3 — Medium</h4>
+          <p>Add grade column: auto-calculate A/B/C/Fail based on marks.</p>
+        </div>
+        <div class="practice-card">
+          <h4>Task 4 — Medium</h4>
+          <p>Add pagination: show only 10 students per page.</p>
+        </div>
+        <div class="practice-card">
+          <h4>Task 5 — Advanced</h4>
+          <p>Add export to CSV functionality for all student data.</p>
+        </div>
+        <div class="practice-card">
+          <h4>Task 6 — Advanced</h4>
+          <p>Add student photo upload with profile picture display.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box tip">
+      <span class="icon">🏆</span>
+      <div class="content"><strong>Congratulations!</strong> You now have a complete foundation — from <code>echo "Hello"</code> all the way to a working Student Management System. Keep building, keep breaking things, keep learning! 🐘</div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" onclick="show(11)">← Previous</button>
+      <button class="btn btn-primary" onclick="show(0)">🔄 Back to Start</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let current = 0;
+  const btns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('.section');
+
+  function show(n) {
+    sections[current].classList.remove('active');
+    btns[current].classList.remove('active');
+    current = n;
+    sections[n].classList.add('active');
+    btns[n].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function copyCode(btn) {
+    const pre = btn.nextElementSibling;
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 1500);
+    });
+  }
+</script>
+
+</body>
+</html>
